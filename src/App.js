@@ -1,10 +1,25 @@
 
 import './App.css';
 
-import React, { useState } from 'react';
+import React, { useState, createRef } from 'react';
+
+/// Calculate current dimensions:::
+const useRefDimensions = (ref) => {
+  const [dimensions, setDimensions] = useState({ width: 1, height: 2 })
+  React.useEffect(() => {
+    if (ref.current) {
+      const { current } = ref
+      const boundingRect = current.getBoundingClientRect()
+      const { width, height } = boundingRect
+      setDimensions({ width: Math.round(width), height: Math.round(height) })
+    }
+  }, [])
+  return dimensions
+}
 
 function App() {
 
+///// Data Object ::::
 var cvsObj={
   "251": {
     "Packing box name": "Supplier (As-Is)",
@@ -11576,17 +11591,22 @@ var cvsObj={
   }
 }
 
+//// Style values:::
 var globalStyle={
-  "fontSize": 35
+  "fontSize": "clamp(12px, 4vw, 40px"
 }
-
+///// State Functions::::
+const divRef = createRef()
+const dimensions = useRefDimensions(divRef)
 const [inputValue, setInputValue] = useState("");
-  const [result, setResult] = useState("");
+const [result, setResult] = useState("");
 
+  /// Handle updating the input values::::
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
-
+  
+  /// Handle keyboard events Function::::
   const handleKeyPress = (e) => {
     if (e.keyCode === 13) {
       e.preventDefault();
@@ -11608,21 +11628,30 @@ const [inputValue, setInputValue] = useState("");
     }
   };
 
+  ////Log the current Input width:::
+  console.log(dimensions.width)
+
+  /// Render ::::
   return (
-    <div style={{ position: "fixed",
+    <div style={{ position: "absolute",
                   top: (window.innerHeight/2)-100,
-                  left: (window.innerWidth/2)-200
+                  left: (window.innerWidth/2)-(dimensions.width/2),
                  }}>
       <input
         type="text"
+        id="myDiv"
         value={inputValue}
         onChange={handleInputChange}
         onKeyDown={handleKeyPress}
         placeholder="Enter Item Number"
+        onFocus={(e) => e.target.placeholder = ""} 
+        onBlur={(e) => e.target.placeholder = "Enter Item Number"}
+        ref={divRef}         
         style={{fontWeight: "bold", fontSize: globalStyle["fontSize"], border: "3px solid black"
       }}
       />
       <p>{result}</p>
+     
     </div>
   );
 };
