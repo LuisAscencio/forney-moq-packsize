@@ -11633,7 +11633,7 @@ const [result, setResult] = useState("");
 
   /// Render ::::
   return (
-    <div style={{ position: "absolute",
+    <div style={{ position: "fixed",
                   top: (window.innerHeight/2)-100,
                   left: (window.innerWidth/2)-(dimensions.width/2),
                  }}>
